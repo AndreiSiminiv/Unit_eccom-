@@ -33,5 +33,18 @@ library(aggregation)
 channel_flow <- aggregate( Расход ~ Канал, data = consumption, sum)
 #доход от рекламы 
 sales_channel <- data_frame(sales$Source,sales$Revenue)
-aggregate(sales$Revenue~sales$Source, data = sales_channel, sum )
-
+sales_channel_sum <-  aggregate(sales$Revenue~sales$Source, data = sales_channel, sum )
+sales_channel_sum <- sales_channel_sum [-6,]
+channel_flow <- mutate(channel_flow,sales_channel_sum$`sales$Revenue`)
+channel_flow <- channel_flow[,-3]
+channel_flow <- channel_flow[,-4]
+# расчёт доход минус расход и добавление в таблицу по рекламе 
+revenue <- (channel_flow$`sales$Revenue` - channel_flow$Расход)
+channel_flow <- mutate(channel_flow, revenue)
+# жилаемая прибыль 25%
+living_profit <- (channel_flow$`sales$Revenue`*40)/100
+channel_flow <- mutate(channel_flow, living_profit)
+#расчёт выручки 
+revenue_total <- (channel_flow$revenue - channel_flow$living_profit)
+channel_flow <- mutate(channel_flow,revenue_total)
+print(channel_flow)
