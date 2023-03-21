@@ -27,3 +27,11 @@ tab12 <- as_sheets_id('https://docs.google.com/spreadsheets/d/1I5Ebye3_g0NmpV2qy
 produkt <- range_read(tab12, 'Продукты')
 #добавляем таблицу расходы 
 consumption <- range_read(tab12,'Данные по расходам')
+# групируем рассход по каналам 
+library(aggregation)
+#расход на рекламу 
+channel_flow <- aggregate( Расход ~ Канал, data = consumption, sum)
+#доход от рекламы 
+sales_channel <- data_frame(sales$Source,sales$Revenue)
+aggregate(sales$Revenue~sales$Source, data = sales_channel, sum )
+
