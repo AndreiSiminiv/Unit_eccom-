@@ -51,4 +51,10 @@ channel_flow <- mutate(channel_flow, living_profit)
 revenue_total <- (channel_flow$revenue - channel_flow$living_profit)
 channel_flow <- mutate(channel_flow,revenue_total)
 print(channel_flow) # расходы на рекламу 
-# проведение retenshen  анализа 
+# проведение retense  анализа 
+unit <- range_read(tab12,'Unit')
+colnames(unit) <- as.character(unlist(unit[1,],use.names = FALSE ))
+unit <- unit[-1,]
+unit$total_user <- c(12,13,12)
+str(unit)
+
