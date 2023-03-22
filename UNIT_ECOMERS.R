@@ -47,4 +47,5 @@ channel_flow <- mutate(channel_flow, living_profit)
 #расчёт выручки 
 revenue_total <- (channel_flow$revenue - channel_flow$living_profit)
 channel_flow <- mutate(channel_flow,revenue_total)
-print(channel_flow)
+print(channel_flow) # расходы на рекламу 
+# проведение retenshen  анализа 
