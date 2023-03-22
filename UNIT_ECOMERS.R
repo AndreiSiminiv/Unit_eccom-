@@ -21,28 +21,31 @@ sales$Revenue[is.na(sales$Revenue)] <- 0
 sales$`Product SKU`[is.na(sales$`Product SKU`)] <- 0
 sales$`Product Name`[is.na(sales$`Product Name`)] <- 0
 print(sales)
-#добавляем таблицу пролукты 
+str(sales)
+sales$Date <- as.Date(sales$Date)
+sales$`First entry` <- as.Date(sales$`First entry`)
+str(sales)
+#добавляем таблицу продукты 
 tab12 <- as_sheets_id('https://docs.google.com/spreadsheets/d/1I5Ebye3_g0NmpV2qyGCqJiLDTNHUKPUxkG3_J_HzrrQ/edit#gid=0',
                       '1I5Ebye3_g0NmpV2qyGCqJiLDTNHUKPUxkG3_J_HzrrQ/edit#gid=0')
 produkt <- range_read(tab12, 'Продукты')
-#добавляем таблицу расходы 
+#добавляем таблицу расходы на рекламу
 consumption <- range_read(tab12,'Данные по расходам')
 # групируем рассход по каналам 
 library(aggregation)
-#расход на рекламу 
+#расход на рекламу сумма по каналам 
 channel_flow <- aggregate( Расход ~ Канал, data = consumption, sum)
 #доход от рекламы 
-sales_channel <- data_frame(sales$Source,sales$Revenue)
+sales_channel <- tibble(sales$Source,sales$Revenue)
 sales_channel_sum <-  aggregate(sales$Revenue~sales$Source, data = sales_channel, sum )
 sales_channel_sum <- sales_channel_sum [-6,]
 channel_flow <- mutate(channel_flow,sales_channel_sum$`sales$Revenue`)
-channel_flow <- channel_flow[,-3]
-channel_flow <- channel_flow[,-4]
+colnames(channel_flow)[3] <- 'Доход'
 # расчёт доход минус расход и добавление в таблицу по рекламе 
-revenue <- (channel_flow$`sales$Revenue` - channel_flow$Расход)
+revenue <- (channel_flow$Доход - channel_flow$Расход)
 channel_flow <- mutate(channel_flow, revenue)
 # жилаемая прибыль 25%
-living_profit <- (channel_flow$`sales$Revenue`*40)/100
+living_profit <- (channel_flow$Доход*40)/100
 channel_flow <- mutate(channel_flow, living_profit)
 #расчёт выручки 
 revenue_total <- (channel_flow$revenue - channel_flow$living_profit)
